@@ -2,7 +2,7 @@
 --[[
 Visit our Discord!
 https://discord.gg/D9B4BNsx6S
-]]]
+]]
 local Author = "@Author CoffeeSolara"
 local name = "@Name VapeLibrary/LoveWare"
 local Dependencies = "@Dependencies Luau 5.1 Level 3-8 Executer"
