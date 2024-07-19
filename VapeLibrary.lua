@@ -7,9 +7,44 @@ local Author = "@Author CoffeeSolara"
 local name = "@Name VapeLibrary/LoveWare"
 local Dependencies = "@Dependencies Luau 5.1 Level 3-8 Executer"
 local Permmisions = "@LevelPermmmisions RobloxScript GuiEditing GetHUI Custom_Lua_Enviorment"
--- LoveWare ModuleScript
-
+-- Loadstring to include the LoveWare library
 local LoveWare = {}
+
+-- Helper function to create UI corner
+local function createUICorner(instance)
+    local corner = Instance.new("UICorner")
+    corner.Parent = instance
+end
+
+-- Function to make the window draggable
+local function makeDraggable(frame)
+    local userInputService = game:GetService("UserInputService")
+    local dragging, dragInput, startPos, startSize
+
+    local function update(input)
+        local delta = input.Position - dragInput
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragInput = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    userInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            update(input)
+        end
+    end)
+end
 
 function LoveWare:CreateWindow(params)
     local gui = Instance.new("ScreenGui")
@@ -17,31 +52,34 @@ function LoveWare:CreateWindow(params)
     gui.Parent = game.CoreGui
 
     local frame = Instance.new("Frame")
-    frame.Size = params.Size or UDim2.new(0, 350, 0, 450)
-    frame.Position = params.Position or UDim2.new(0.5, -175, 0.5, -225)
-    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.Size = params.Size or UDim2.new(0, 300, 0, 400)
+    frame.Position = params.Position or UDim2.new(0.5, -150, 0.5, -200)
+    frame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
     frame.BorderSizePixel = 0
+    createUICorner(frame)  -- Add UI corner
     frame.Parent = gui
 
+    makeDraggable(frame)  -- Make the window draggable
+
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
-    title.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     title.BorderSizePixel = 0
     title.Text = params.Title or "LoveWare"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 22
+    title.Font = Enum.Font.SourceSansBold
+    title.TextSize = 18
     title.Parent = frame
 
     local contentFrame = Instance.new("Frame")
-    contentFrame.Size = UDim2.new(1, 0, 1, -40)
-    contentFrame.Position = UDim2.new(0, 0, 0, 40)
-    contentFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    contentFrame.Size = UDim2.new(1, 0, 1, -30)
+    contentFrame.Position = UDim2.new(0, 0, 0, 30)
+    contentFrame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
     contentFrame.BorderSizePixel = 0
+    createUICorner(contentFrame)  -- Add UI corner
     contentFrame.Parent = frame
 
     local uiListLayout = Instance.new("UIListLayout")
-    uiListLayout.FillDirection = Enum.FillDirection.Vertical
     uiListLayout.Parent = contentFrame
 
     local window = {
@@ -56,25 +94,26 @@ end
 
 function LoveWare:CreateTab(window, tabName)
     local tabButton = Instance.new("TextButton")
-    tabButton.Size = UDim2.new(1, 0, 0, 40)
-    tabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    tabButton.Size = UDim2.new(1, 0, 0, 30)
+    tabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     tabButton.BorderSizePixel = 0
     tabButton.Text = tabName
     tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabButton.Font = Enum.Font.GothamBold
-    tabButton.TextSize = 20
+    tabButton.Font = Enum.Font.SourceSansBold
+    tabButton.TextSize = 18
+    createUICorner(tabButton)  -- Add UI corner
     tabButton.Parent = window.ContentFrame
 
     local tabContent = Instance.new("Frame")
-    tabContent.Size = UDim2.new(1, 0, 1, -40)
-    tabContent.Position = UDim2.new(0, 0, 0, 40)
-    tabContent.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabContent.Size = UDim2.new(1, 0, 1, -30)
+    tabContent.Position = UDim2.new(0, 0, 0, 30)
+    tabContent.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
     tabContent.BorderSizePixel = 0
     tabContent.Visible = false
+    createUICorner(tabContent)  -- Add UI corner
     tabContent.Parent = window.ContentFrame
 
     local uiListLayout = Instance.new("UIListLayout")
-    uiListLayout.FillDirection = Enum.FillDirection.Vertical
     uiListLayout.Parent = tabContent
 
     tabButton.MouseButton1Click:Connect(function()
@@ -95,13 +134,14 @@ end
 
 function LoveWare:CreateButton(tab, buttonText, callback)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, 0, 0, 40)
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Size = UDim2.new(1, 0, 0, 30)
+    button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
     button.BorderSizePixel = 0
     button.Text = buttonText
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 20
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 18
+    createUICorner(button)  -- Add UI corner
     button.Parent = tab.Content
 
     button.MouseButton1Click:Connect(function()
@@ -111,31 +151,33 @@ end
 
 function LoveWare:CreateDropdown(tab, dropdownText, options, callback)
     local dropdown = Instance.new("Frame")
-    dropdown.Size = UDim2.new(1, 0, 0, 40)
-    dropdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    dropdown.Size = UDim2.new(1, 0, 0, 30)
+    dropdown.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
     dropdown.BorderSizePixel = 0
+    createUICorner(dropdown)  -- Add UI corner
     dropdown.Parent = tab.Content
 
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, 0, 1, 0)
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
     button.BorderSizePixel = 0
     button.Text = dropdownText
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.Gotham
-    button.TextSize = 20
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 18
+    createUICorner(button)  -- Add UI corner
     button.Parent = dropdown
 
     local optionsFrame = Instance.new("Frame")
-    optionsFrame.Size = UDim2.new(1, 0, 0, #options * 40)
+    optionsFrame.Size = UDim2.new(1, 0, 0, #options * 30)
     optionsFrame.Position = UDim2.new(0, 0, 1, 0)
-    optionsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    optionsFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     optionsFrame.BorderSizePixel = 0
     optionsFrame.Visible = false
+    createUICorner(optionsFrame)  -- Add UI corner
     optionsFrame.Parent = dropdown
 
     local uiListLayout = Instance.new("UIListLayout")
-    uiListLayout.FillDirection = Enum.FillDirection.Vertical
     uiListLayout.Parent = optionsFrame
 
     button.MouseButton1Click:Connect(function()
@@ -144,13 +186,14 @@ function LoveWare:CreateDropdown(tab, dropdownText, options, callback)
 
     for _, option in ipairs(options) do
         local optionButton = Instance.new("TextButton")
-        optionButton.Size = UDim2.new(1, 0, 0, 40)
-        optionButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        optionButton.Size = UDim2.new(1, 0, 0, 30)
+        optionButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
         optionButton.BorderSizePixel = 0
         optionButton.Text = option
         optionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        optionButton.Font = Enum.Font.Gotham
-        optionButton.TextSize = 20
+        optionButton.Font = Enum.Font.SourceSans
+        optionButton.TextSize = 18
+        createUICorner(optionButton)  -- Add UI corner
         optionButton.Parent = optionsFrame
 
         optionButton.MouseButton1Click:Connect(function()
@@ -163,61 +206,64 @@ end
 
 function LoveWare:CreateSlider(tab, sliderText, min, max, default, callback)
     local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, 0, 0, 70)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderFrame.Size = UDim2.new(1, 0, 0, 50)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
     sliderFrame.BorderSizePixel = 0
+    createUICorner(sliderFrame)  -- Add UI corner
     sliderFrame.Parent = tab.Content
 
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, 0, 0, 20)
-    label.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    label.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
     label.BorderSizePixel = 0
     label.Text = sliderText .. ": " .. default
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 20
+    label.Font = Enum.Font.SourceSans
+    label.TextSize = 18
+    createUICorner(label)  -- Add UI corner
     label.Parent = sliderFrame
 
-    local slider = Instance.new("TextButton")
-    slider.Size = UDim2.new(1, 0, 0, 20)
-    slider.Position = UDim2.new(0, 0, 0.5, -10)
-    slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    local slider = Instance.new("Frame")
+    slider.Size = UDim2.new(1, 0, 0, 10)
+    slider.Position = UDim2.new(0, 0, 0, 30)
+    slider.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
     slider.BorderSizePixel = 0
-    slider.Text = ""
+    createUICorner(slider)  -- Add UI corner
     slider.Parent = sliderFrame
 
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(33, 150, 243)
-    sliderBar.BorderSizePixel = 0
-    sliderBar.Parent = slider
+    local handle = Instance.new("Frame")
+    handle.Size = UDim2.new(0, 10, 1, 0)
+    handle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    handle.BorderSizePixel = 0
+    createUICorner(handle)  -- Add UI corner
+    handle.Parent = slider
 
-    local dragging = false
+    local function updateHandle(position)
+        local clampedPos = math.clamp(position, 0, slider.AbsoluteSize.X)
+        handle.Position = UDim2.new(0, clampedPos, 0, 0)
+        local value = math.floor(((clampedPos / slider.AbsoluteSize.X) * (max - min)) + min)
+        label.Text = sliderText .. ": " .. value
+        callback(value)
+    end
+
     slider.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
+            updateHandle(input.Position.X - slider.AbsolutePosition.X)
+            local connection
+            connection = userInputService.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
+                    updateHandle(input.Position.X - slider.AbsolutePosition.X)
+                end
+            end)
+            userInputService.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    connection:Disconnect()
+                end
+            end)
         end
     end)
 
-    slider.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    slider.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local mousePos = input.Position.X
-            local sliderPos = slider.AbsolutePosition.X
-            local sliderSize = slider.AbsoluteSize.X
-            local newValue = math.clamp((mousePos - sliderPos) / sliderSize, 0, 1)
-            local value = math.floor(min + newValue * (max - min))
-            sliderBar.Size = UDim2.new(newValue, 0, 1, 0)
-            label.Text = sliderText .. ": " .. value
-            callback(value)
-        end
-    end)
+    updateHandle((default - min) / (max - min) * slider.AbsoluteSize.X)
 end
 
 return LoveWare
-
